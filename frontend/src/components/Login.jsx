@@ -1,27 +1,49 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
 import bgImage from "../assets/login-bg.jpg";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // To navigate after successful login
+
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form default behavior (page reload)
 
-    const email = e.target.email.value; // Get the email value
-    const password = e.target.password.value; // Get the password value
+    // Dummy validation before sending request
+    if (!email || !password) {
+      toast.error("Please fill all the fields");
+      return;
+    }
 
-    // Dummy login logic (replace with actual authentication logic)
-    if (email === "test@example.com" && password === "password123") {
-      toast.success("Logged in successfully!"); // Success toast
-    } else {
-      toast.error("Invalid credentials!"); // Error toast
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: "include", // Send cookies with the request
+      });
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        toast.success(data.message); // Success toast
+        navigate("/dashboard"); // Redirect to dashboard (or wherever you want)
+      } else {
+        toast.error(data.message || "Invalid credentials!"); // Error toast
+      }
+    } catch (error) {
+      console.error("Error logging in", error);
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   return (
     <>
-      {/* Add Toaster component to show toast notifications */}
       <Toaster position="top-right" reverseOrder={false} />
 
       <section
@@ -45,8 +67,6 @@ function Login() {
                 Sign in to your account
               </h1>
               <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-                {" "}
-                {/* Modified: Add onSubmit handler */}
                 <div>
                   <label
                     htmlFor="email"
@@ -60,6 +80,8 @@ function Login() {
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -76,32 +98,13 @@ function Login() {
                     id="password"
                     placeholder="••••••••"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="remember"
-                        aria-describedby="remember"
-                        type="checkbox"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        required
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label
-                        htmlFor="remember"
-                        className="text-gray-500 dark:text-gray-300"
-                      >
-                        Remember me
-                      </label>
-                    </div>
-                  </div>
-                </div>
                 <button
-                  type="submit" // Modified: The form now triggers the onSubmit handler
+                  type="submit"
                   className="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md hover:shadow-lg active:shadow-xl active:scale-95 transition duration-150 ease-in-out dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400"
                 >
                   Sign in

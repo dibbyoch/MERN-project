@@ -5,8 +5,16 @@ const { DBConnection } = require("./database/db");
 const User = require("./model/user");
 const app = express();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+require("dotenv").config();
 
-// Middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -16,22 +24,17 @@ DBConnection();
 app.post("/register", async (req, res) => {
   try {
     const { firstname, lastname, email, password } = req.body;
-    console.log(firstname, lastname, email, password);
 
     if (!firstname || !lastname || !email || !password) {
-      return res.status(400).send("Please fill all the fields");
+      return res.status(400).json({ message: "Please fill all fields" });
     }
 
-    // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).send("User already exists");
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Save the data to the database
     const newUser = await User.create({
       firstname,
       lastname,
@@ -39,71 +42,59 @@ app.post("/register", async (req, res) => {
       password: hashedPassword,
     });
 
-    // Generate a token for the user
-    const token = jwt.sign({ id: newUser._id, email }, process.env.JWT_SECRET, {
-      expiresIn: "4h",
-    });
+    const token = jwt.sign(
+      { id: newUser._id, email },
+      process.env.JWT_SECRET || "fallbacksecret",
+      {
+        expiresIn: "4h",
+      }
+    );
 
-    newUser.token = token;
-    newUser.password = undefined;
-
-    res.status(201).json({
-      success: true,
-      message: "User registered successfully",
-      user: newUser,
-    });
-  } catch (error) {
-    console.log("Error in registering user", error);
-    res.status(500).send("Internal Server Error");
+    res.status(201).json({ message: "User registered successfully", token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 app.post("/login", async (req, res) => {
   try {
-    // get all the data from the request body
     const { email, password } = req.body;
-    console.log(email, password);
 
-    //check that the data is not empty
-    if (!email || !password) {
-      return res.status(400).send("Please fill all the fields");
-    }
-    // find the user in the database using the email
-    const loginUser = await User.findOne({ email });
-    if (!loginUser) {
-      return res.status(400).send("User not found,Please register first");
-    }
-    // match/compare the password using bcrypt
-    const isMatch = await bcrypt.compare(password, loginUser.password);
-    if (!isMatch) {
-      return res.status(400).send("Invalid credentials");
-    }
-    // store cookies and send the token to the client
+    if (!email || !password)
+      return res.status(400).json({ message: "All fields required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Incorrect password" });
+
     const token = jwt.sign(
-      // Generate a token for the user
-      { id: loginUser._id, email },
-      process.env.JWT_SECRET,
+      { id: user._id, email },
+      process.env.JWT_SECRET || "fallbacksecret",
       {
         expiresIn: "4h",
       }
     );
-    res.cookie("authToken", token, {
-      //added cookie
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
-      maxAge: 4 * 60 * 60 * 1000,
-    });
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-    });
-  } catch (error) {
-    console.log("Error in logging in user", error);
-    res.status(500).send("Internal Server Error");
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        maxAge: 4 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({ message: "Login successful", token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

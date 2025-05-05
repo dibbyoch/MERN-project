@@ -1,23 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import bgImage from "../assets/login-bg.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
+import axios from "axios"; // Import axios
 
 function Register() {
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // To navigate after successful registration
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const firstname = e.target.firstname.value;
-    const lastname = e.target.lastname.value;
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    const userData = {
+      firstname,
+      lastname,
+      email,
+      password,
+    };
 
-    const success = email && password;
-
-    if (success) {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/register",
+        userData,
+        {
+          withCredentials: true, // To send and receive cookies (e.g., for JWT)
+        }
+      );
+      console.log(response.data);
       toast.success("Account created successfully!");
-    } else {
-      toast.error("Account creation failed. Please try again.");
+      navigate("/login"); // Navigate to login after successful registration
+    } catch (error) {
+      console.error("Error:", error.response);
+      toast.error("Error creating account, please try again.");
     }
   };
 
@@ -63,6 +80,8 @@ function Register() {
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="John"
                       required
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
                     />
                   </div>
                   <div className="w-1/2">
@@ -79,10 +98,11 @@ function Register() {
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Doe"
                       required
+                      value={lastname}
+                      onChange={(e) => setLastname(e.target.value)}
                     />
                   </div>
                 </div>
-
                 <div>
                   <label
                     htmlFor="email"
@@ -94,9 +114,11 @@ function Register() {
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div>
@@ -110,50 +132,26 @@ function Register() {
                     type="password"
                     name="password"
                     id="password"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="terms"
-                      aria-describedby="terms"
-                      type="checkbox"
-                      className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label
-                      htmlFor="terms"
-                      className="font-light text-gray-500 dark:text-gray-300"
-                    >
-                      I accept the{" "}
-                      <a
-                        className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                        href="#"
-                      >
-                        Terms and Conditions
-                      </a>
-                    </label>
-                  </div>
                 </div>
                 <button
                   type="submit"
                   className="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md hover:shadow-lg active:shadow-xl active:scale-95 transition duration-150 ease-in-out dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400"
                 >
-                  Create an account
+                  Sign up
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
                   <Link
-                    to="/"
+                    to="/login"
                     className="font-medium text-blue-600 hover:underline dark:text-blue-400"
                   >
-                    Login here
+                    Sign in
                   </Link>
                 </p>
               </form>

@@ -8,15 +8,14 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <>
+    <Router>
       <Toaster position="top-right" reverseOrder={false} />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </Router>
-    </>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<div>Dashboard Page</div>} />
+      </Routes>
+    </Router>
   );
 }
 
