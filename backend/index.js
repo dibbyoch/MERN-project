@@ -3,10 +3,16 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { DBConnection } = require("./database/db");
 const User = require("./model/user");
-const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+const problemRoutes = require("./routes/problemRoutes");
+const compilerRoutes = require("./routes/compilerRoutes");
+
 require("dotenv").config();
+
+const app = express();
+DBConnection();
 
 app.use(
   cors({
@@ -19,7 +25,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-DBConnection();
+// function authenticateToken(req, res, next) {
+//   const token =
+//     req.cookies.token || req.headers["authorization"]?.split(" ")[1];
+
+//   if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+//   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+//     if (err) return res.status(403).json({ message: "Forbidden" });
+//     req.user = user;
+//     next();
+//   });
+// }
+
+app.use("/api/problems", problemRoutes);
+app.use("/compiler", compilerRoutes);
 
 app.post("/register", async (req, res) => {
   try {
@@ -42,15 +62,19 @@ app.post("/register", async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = jwt.sign(
-      { id: newUser._id, email },
-      process.env.JWT_SECRET || "fallbacksecret",
-      {
-        expiresIn: "4h",
-      }
-    );
+    const token = jwt.sign({ id: newUser._id, email }, process.env.JWT_SECRET, {
+      expiresIn: "4h",
+    });
 
-    res.status(201).json({ message: "User registered successfully", token });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        maxAge: 4 * 60 * 60 * 1000,
+      })
+      .status(201)
+      .json({ message: "User registered successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -87,11 +111,37 @@ app.post("/login", async (req, res) => {
         maxAge: 4 * 60 * 60 * 1000,
       })
       .status(200)
-      .json({ message: "Login successful", token });
+      .json({ message: "Login successful" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
+});
+
+app.get("/me", (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ id: decoded.id, email: decoded.email });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+});
+
+app.post("/logout", (req, res) => {
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+    })
+    .status(200)
+    .json({ message: "Logged out successfully" });
 });
 
 const PORT = 8000;

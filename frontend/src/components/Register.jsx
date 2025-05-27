@@ -26,7 +26,7 @@ function Register() {
         "http://localhost:8000/register",
         userData,
         {
-          withCredentials: true, // To send and receive cookies (e.g., for JWT)
+          withCredentials: true,
         }
       );
       console.log(response.data);

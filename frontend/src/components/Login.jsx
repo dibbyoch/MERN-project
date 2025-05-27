@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
 import bgImage from "../assets/login-bg.jpg";
+import axios from "axios";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,35 +11,31 @@ function Login() {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent form default behavior (page reload)
+    e.preventDefault();
 
-    // Dummy validation before sending request
     if (!email || !password) {
       toast.error("Please fill all the fields");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // Send cookies with the request
-      });
-
-      const data = await response.json();
+      const response = await axios.post(
+        "http://localhost:8000/login",
+        { email, password },
+        { withCredentials: true }
+      );
 
       if (response.status === 200) {
-        toast.success(data.message); // Success toast
-        navigate("/dashboard"); // Redirect to dashboard (or wherever you want)
+        toast.success(response.data.message);
+        navigate("/dashboard");
       } else {
-        toast.error(data.message || "Invalid credentials!"); // Error toast
+        toast.error(response.data.message || "Invalid credentials!");
       }
     } catch (error) {
       console.error("Error logging in", error);
-      toast.error("An error occurred. Please try again.");
+      toast.error(
+        error?.response?.data?.message || "An error occurred. Please try again."
+      );
     }
   };
 

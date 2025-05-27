@@ -49,7 +49,11 @@ function App() {
     };
 
     try {
-      const { data } = await axios.post("http://localhost:3000/run", payload);
+      const { data } = await axios.post(
+        "http://localhost:8000/compiler/run",
+        payload,
+        { withCredentials: true }
+      );
       setOutput(data.output);
     } catch (error) {
       console.error(error.response || error);
