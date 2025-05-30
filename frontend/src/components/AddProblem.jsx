@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom";
 import { Menu, Home, Code, Plus, Settings } from "lucide-react";
 
-// Reusable Card Component
 const Card = ({ children, className }) => (
   <div className={`bg-white p-6 shadow-lg rounded-lg ${className}`}>
     {children}
   </div>
 );
 
-// Reusable Button Component
 const Button = ({
   children,
   onClick,
@@ -38,7 +36,6 @@ const Button = ({
   );
 };
 
-// Sidebar Component
 const Sidebar = ({ isSidebarCollapsed, toggleSidebar, navigate }) => (
   <aside
     className={`${
@@ -106,7 +103,7 @@ export default function AddProblem() {
   });
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const navigate = useNavigate(); // Correctly define navigate here
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -119,7 +116,7 @@ export default function AddProblem() {
         withCredentials: true,
       });
 
-      navigate("/dashboard"); // Use navigate for redirection
+      navigate("/dashboard");
     } catch (err) {
       console.error("Failed to add problem:", err.response?.data || err);
     }
@@ -131,7 +128,6 @@ export default function AddProblem() {
 
   return (
     <div className="flex min-h-screen bg-black text-white">
-      {/* Sidebar */}
       <Sidebar
         isSidebarCollapsed={isSidebarCollapsed}
         toggleSidebar={toggleSidebar}

@@ -7,7 +7,7 @@ if (!fs.existsSync(dirCodes)) {
   fs.mkdirSync(dirCodes);
 }
 
-// Mapping language to correct file extension
+// Mapping language
 const languageToExtension = {
   cpp: "cpp",
   c: "c",

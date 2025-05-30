@@ -13,14 +13,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-// Card Component
 const Card = ({ children, className }) => (
   <div className={`bg-white p-6 shadow-lg rounded-lg ${className}`}>
     {children}
   </div>
 );
 
-// Button Component
 const Button = ({
   children,
   onClick,
@@ -35,7 +33,7 @@ const Button = ({
     variant === "ghost"
       ? "bg-transparent text-white hover:bg-white/10"
       : "bg-blue-500 text-white hover:bg-blue-600";
-  const hoverStyles = "hover:shadow-lg hover:scale-105"; // Hover effects
+  const hoverStyles = "hover:shadow-lg hover:scale-105";
 
   return (
     <button
@@ -47,7 +45,7 @@ const Button = ({
   );
 };
 
-// Difficulty color coding
+// Function to get difficulty color
 const getDifficultyColor = (difficulty) => {
   switch (difficulty) {
     case "Easy":
@@ -100,7 +98,7 @@ export default function Dashboard() {
         `http://localhost:8000/api/problems/${selectedProblem._id}`,
         {
           data: { username, password: adminPassword },
-          withCredentials: true, // this sends cookies like auth tokens
+          withCredentials: true,
         }
       );
       setProblems(problems.filter((p) => p._id !== selectedProblem._id));
@@ -113,7 +111,6 @@ export default function Dashboard() {
     }
   };
 
-  // Handle Logout
   const handleLogout = async () => {
     try {
       await axios.post(
@@ -128,16 +125,14 @@ export default function Dashboard() {
       toast.error("Logout failed");
     }
   };
-  // Toggle sidebar visibility
+
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
-  // Handle click outside of sidebar to collapse
   const handleMainClick = () =>
     !isSidebarCollapsed && setIsSidebarCollapsed(true);
 
   return (
     <div className="flex min-h-screen bg-black text-white relative">
-      {/* Sidebar */}
       <aside
         className={`${
           isSidebarCollapsed ? "w-16" : "w-64"
@@ -151,7 +146,7 @@ export default function Dashboard() {
         >
           <Menu className="w-5 h-5" />
         </Button>
-        {/* Sidebar will be hidden if collapsed */}
+
         {!isSidebarCollapsed && (
           <nav className="space-y-2">
             <Button
@@ -187,7 +182,6 @@ export default function Dashboard() {
         )}
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 p-6 space-y-6" onClick={handleMainClick}>
         <Card className="backdrop-blur-md bg-white/10 border border-white/20 shadow-xl rounded-2xl">
           <h2 className="text-2xl font-semibold mb-6">Problem List</h2>
@@ -254,7 +248,6 @@ export default function Dashboard() {
         </Card>
       </main>
 
-      {/* Delete Popup */}
       {showDeletePopup && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-blue-900/80 text-white p-6 rounded-xl shadow-2xl w-[400px] border border-blue-300/20 backdrop-blur-lg transition-all duration-300">
