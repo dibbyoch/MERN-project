@@ -8,7 +8,7 @@ function ProtectedRoute({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get("http://localhost:8000/me", {
+        await axios.get("${process.env.REACT_APP_API_BASE_URL}/me", {
           withCredentials: true,
         });
         setIsAuth(true);

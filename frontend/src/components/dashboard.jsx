@@ -73,9 +73,12 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/problems", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "${process.env.REACT_APP_API_BASE_URL}/api/problems",
+          {
+            withCredentials: true,
+          }
+        );
         setProblems(response.data);
       } catch (err) {
         console.error("Error fetching problems:", err);
@@ -95,7 +98,7 @@ export default function Dashboard() {
 
     try {
       await axios.delete(
-        `http://localhost:8000/api/problems/${selectedProblem._id}`,
+        "${process.env.REACT_APP_API_BASE_URL}/api/problems/${selectedProblem._id}",
         {
           data: { username, password: adminPassword },
           withCredentials: true,
@@ -114,7 +117,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:8000/logout",
+        "${process.env.REACT_APP_API_BASE_URL}/logout",
         {},
         { withCredentials: true }
       );

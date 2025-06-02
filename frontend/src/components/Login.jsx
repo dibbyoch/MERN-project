@@ -19,7 +19,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/login",
+        "${process.env.REACT_APP_API_BASE_URL}/login",
         { email, password },
         { withCredentials: true }
       );

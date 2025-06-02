@@ -50,7 +50,7 @@ function App() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/compiler/run",
+        "${process.env.REACT_APP_API_BASE_URL}/compiler/run",
         payload,
         { withCredentials: true }
       );

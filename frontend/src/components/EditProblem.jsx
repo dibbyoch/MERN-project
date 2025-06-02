@@ -16,7 +16,7 @@ export default function EditProblem() {
     const fetchProblem = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/problems/${id}`,
+          "${process.env.REACT_APP_API_BASE_URL}/api/problems/${id}",
           { withCredentials: true }
         );
         setProblem(res.data);
@@ -37,7 +37,7 @@ export default function EditProblem() {
   const handleSubmit = async () => {
     try {
       await axios.put(
-        `http://localhost:8000/api/problems/${id}`,
+        "${process.env.REACT_APP_API_BASE_URL}/api/problems/${id}",
         {
           ...problem,
           username,

@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import bgImage from "../assets/login-bg.jpg";
 import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
-import axios from "axios"; // Import axios
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function Register() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // To navigate after successful registration
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ function Register() {
       );
       console.log(response.data);
       toast.success("Account created successfully!");
-      navigate("/login"); // Navigate to login after successful registration
+      navigate("/login");
     } catch (error) {
       console.error("Error:", error.response);
       toast.error("Error creating account, please try again.");

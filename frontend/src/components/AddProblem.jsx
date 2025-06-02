@@ -112,9 +112,13 @@ export default function AddProblem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/problems", form, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "${process.env.REACT_APP_API_BASE_URL}/api/problems",
+        form,
+        {
+          withCredentials: true,
+        }
+      );
 
       navigate("/dashboard");
     } catch (err) {
