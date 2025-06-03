@@ -3,6 +3,7 @@ import bgImage from "../assets/login-bg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import.meta.env.VITE_API_BASE_URL;
 
 function Register() {
   const [firstname, setFirstname] = useState("");
@@ -23,7 +24,7 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/register",
+        `${import.meta.env.VITE_API_BASE_URL}/register`,
         userData,
         {
           withCredentials: true,

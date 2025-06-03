@@ -8,6 +8,7 @@ import "prismjs/components/prism-java";
 import "prismjs/components/prism-python";
 import "prismjs/themes/prism.css";
 import axios from "axios";
+import.meta.env.VITE_API_BASE_URL;
 
 const defaultCodes = {
   cpp: `#include <iostream>
@@ -50,7 +51,7 @@ function App() {
 
     try {
       const { data } = await axios.post(
-        "${process.env.REACT_APP_API_BASE_URL}/compiler/run",
+        `${import.meta.env.VITE_API_BASE_URL}/compiler/run`,
         payload,
         { withCredentials: true }
       );

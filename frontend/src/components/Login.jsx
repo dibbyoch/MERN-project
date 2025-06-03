@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import bgImage from "../assets/login-bg.jpg";
 import axios from "axios";
+import.meta.env.REACT_APP_API_BASE_URL;
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_BASE_URL}/login",
+        `${import.meta.env.VITE_API_BASE_URL}/login`,
         { email, password },
         { withCredentials: true }
       );

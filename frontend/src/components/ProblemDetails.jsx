@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
+import.meta.env.REACT_APP_API_BASE_URL;
 
 export default function ProblemDetails() {
   const { id } = useParams();
@@ -12,7 +13,7 @@ export default function ProblemDetails() {
     const fetchProblem = async () => {
       try {
         const res = await axios.get(
-          "${process.env.REACT_APP_API_BASE_URL}/api/problems/${id}",
+          `${import.meta.env.VITE_API_BASE_URL}/api/problems/${id}`,
           { withCredentials: true }
         );
 

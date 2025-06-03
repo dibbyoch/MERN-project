@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import.meta.env.VITE_API_BASE_URL;
 
 const Card = ({ children, className }) => (
   <div className={`bg-white p-6 shadow-lg rounded-lg ${className}`}>
@@ -74,7 +75,7 @@ export default function Dashboard() {
     const fetchProblems = async () => {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_BASE_URL}/api/problems",
+          `${import.meta.env.VITE_API_BASE_URL}/api/problems`,
           {
             withCredentials: true,
           }
@@ -98,7 +99,9 @@ export default function Dashboard() {
 
     try {
       await axios.delete(
-        "${process.env.REACT_APP_API_BASE_URL}/api/problems/${selectedProblem._id}",
+        `${import.meta.env.VITE_API_BASE_URL}/api/problems/${
+          selectedProblem._id
+        }`,
         {
           data: { username, password: adminPassword },
           withCredentials: true,
@@ -117,7 +120,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "${process.env.REACT_APP_API_BASE_URL}/logout",
+        `${import.meta.env.VITE_API_BASE_URL}/logout`,
         {},
         { withCredentials: true }
       );

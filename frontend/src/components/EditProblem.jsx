@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { ArrowLeft } from "lucide-react";
+import.meta.env.VITE_API_BASE_URL;
 
 export default function EditProblem() {
   const { id } = useParams();
@@ -16,7 +17,7 @@ export default function EditProblem() {
     const fetchProblem = async () => {
       try {
         const res = await axios.get(
-          "${process.env.REACT_APP_API_BASE_URL}/api/problems/${id}",
+          `${import.meta.env.VITE_API_BASE_URL}/api/problems/${id}`,
           { withCredentials: true }
         );
         setProblem(res.data);
@@ -37,7 +38,7 @@ export default function EditProblem() {
   const handleSubmit = async () => {
     try {
       await axios.put(
-        "${process.env.REACT_APP_API_BASE_URL}/api/problems/${id}",
+        `${import.meta.env.VITE_API_BASE_URL}/api/problems/${id}`,
         {
           ...problem,
           username,

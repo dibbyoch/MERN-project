@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Menu, Home, Code, Plus, Settings } from "lucide-react";
+import.meta.env.VITE_API_BASE_URL;
 
 const Card = ({ children, className }) => (
   <div className={`bg-white p-6 shadow-lg rounded-lg ${className}`}>
@@ -113,7 +114,7 @@ export default function AddProblem() {
     e.preventDefault();
     try {
       await axios.post(
-        "${process.env.REACT_APP_API_BASE_URL}/api/problems",
+        `${import.meta.env.VITE_API_BASE_URL}/api/problems`,
         form,
         {
           withCredentials: true,
