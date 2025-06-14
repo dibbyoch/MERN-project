@@ -16,8 +16,7 @@ DBConnection();
 
 app.use(
   cors({
-    origin:
-      "http://mern-onlinejudge-frontend.s3-website-us-east-1.amazonaws.com",
+    origin: "http://localhost:5173", //"http://mern-onlinejudge-frontend.s3-website-us-east-1.amazonaws.com",
     credentials: true,
   })
 );

@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import.meta.env.REACT_APP_API_BASE_URL;
+import.meta.env.VITE_API_BASE_URL;
 
 function ProtectedRoute({ children }) {
   const [isAuth, setIsAuth] = useState(null);
