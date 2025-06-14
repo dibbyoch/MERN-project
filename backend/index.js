@@ -16,11 +16,14 @@ DBConnection();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", //"http://mern-onlinejudge-frontend.s3-website-us-east-1.amazonaws.com",
+    origin:
+      "http://mern-onlinejudge-frontend.s3-website-us-east-1.amazonaws.com",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
