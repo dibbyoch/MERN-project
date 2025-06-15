@@ -16,8 +16,11 @@ DBConnection();
 
 app.use(
   cors({
-    origin:
-      "http://mern-onlinejudge-frontend.s3-website-us-east-1.amazonaws.com",
+    origin: [
+      "http://54.211.54.223",
+      "http://ec2-54-211-54-223.compute-1.amazonaws.com",
+    ],
+
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
