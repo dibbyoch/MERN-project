@@ -23,7 +23,7 @@ int main() {
     return 0;
 }`,
   py: `print("Hello World!")`,
-  java: `public class Main {
+  java: `class Main {
     public static void main(String[] args) {
         System.out.println("Hello World!");
     }
